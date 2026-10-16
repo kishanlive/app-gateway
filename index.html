@@ -71,6 +71,11 @@
 
     // Trigger protocol once safely
     window.location.href = deepLink;
+
+    // Attempt to automatically close tab after Roblox launches
+    setTimeout(() => {
+      window.close();
+    }, 1200);
   </script>
 </body>
 </html>

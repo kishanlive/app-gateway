@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Launching App Session...</title>
+  <style>
+    body {
+      background: radial-gradient(circle at 50% 20%, #1e1e38 0%, #0d0f17 100%);
+      color: #f1f5f9;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+      text-align: center;
+    }
+    .card {
+      background: rgba(26, 29, 45, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      padding: 35px 25px;
+      max-width: 420px;
+      width: 90%;
+      box-shadow: 0 20px 45px rgba(0,0,0,0.7);
+    }
+    .icon { font-size: 50px; margin-bottom: 12px; }
+    h1 { font-size: 22px; color: #38bdf8; margin-bottom: 8px; }
+    p { font-size: 14px; color: #94a3b8; line-height: 1.5; margin-bottom: 20px; }
+    .badge {
+      display: inline-block;
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      margin-bottom: 20px;
+      font-weight: bold;
+    }
+    .btn {
+      display: block;
+      background: linear-gradient(135deg, #06b6d4, #3b82f6);
+      color: #fff;
+      padding: 14px;
+      border-radius: 12px;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    .hint { margin-top: 15px; font-size: 12px; color: #64748b; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">🚀</div>
+    <h1>Launching Roblox Server...</h1>
+    <p>Connecting you directly to low-player server instance (bypassing matchmaking).</p>
+    <div class="badge" id="jobBadge">Loading...</div>
+    <a href="#" class="btn" id="openBtn">Open Roblox Manually</a>
+    <div class="hint">Click <b>Allow / Open</b> if your browser prompts.</div>
+  </div>
+  <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const jobId = urlParams.get('jobId') || urlParams.get('gameId') || '';
+    const placeId = '107778070777162';
+    const deepLink = 'roblox://experiences/start?placeId=' + placeId + '&gameInstanceId=' + jobId;
+    
+    document.getElementById('jobBadge').innerText = jobId ? 'Instance: ' + jobId.slice(0, 16) + '...' : 'Auto';
+    document.getElementById('openBtn').href = deepLink;
+
+    window.location.href = deepLink;
+    setTimeout(() => { window.location.replace(deepLink); }, 300);
+  </script>
+</body>
+</html>

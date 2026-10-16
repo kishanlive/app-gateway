@@ -55,7 +55,7 @@
   <div class="card">
     <div class="icon">🚀</div>
     <h1>Launching Roblox Server...</h1>
-    <p>Connecting you directly to low-player server instance (bypassing matchmaking).</p>
+    <p>Connecting you directly to low-player public server.</p>
     <div class="badge" id="jobBadge">Loading...</div>
     <a href="#" class="btn" id="openBtn">Open Roblox Manually</a>
     <div class="hint">Click <b>Allow / Open</b> if your browser prompts.</div>
@@ -66,11 +66,11 @@
     const placeId = '107778070777162';
     const deepLink = 'roblox://experiences/start?placeId=' + placeId + '&gameInstanceId=' + jobId;
     
-    document.getElementById('jobBadge').innerText = jobId ? 'Instance: ' + jobId.slice(0, 16) + '...' : 'Auto';
+    document.getElementById('jobBadge').innerText = jobId ? 'Instance: #' + jobId.slice(0, 8) : 'Auto';
     document.getElementById('openBtn').href = deepLink;
 
+    // Trigger protocol once safely
     window.location.href = deepLink;
-    setTimeout(() => { window.location.replace(deepLink); }, 300);
   </script>
 </body>
 </html>

@@ -25,15 +25,14 @@
       background: rgba(22, 26, 42, 0.96);
       border: 1px solid rgba(56, 189, 248, 0.25);
       border-radius: 24px;
-      padding: 36px 26px;
-      max-width: 440px;
+      padding: 40px 28px;
+      max-width: 420px;
       width: 100%;
       box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75), 0 0 40px rgba(6, 182, 212, 0.12);
       backdrop-filter: blur(12px);
-      position: relative;
     }
     .icon {
-      font-size: 54px;
+      font-size: 56px;
       margin-bottom: 14px;
       display: inline-block;
       animation: bounce 2s infinite ease-in-out;
@@ -43,68 +42,32 @@
       50% { transform: translateY(-6px); }
     }
     h1 {
-      font-size: 23px;
+      font-size: 24px;
       font-weight: 800;
       background: linear-gradient(135deg, #38bdf8, #818cf8);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
     p {
-      font-size: 14px;
+      font-size: 15px;
       color: #94a3b8;
       line-height: 1.5;
-      margin-bottom: 22px;
-    }
-    .server-box {
-      background: rgba(15, 23, 42, 0.8);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 14px;
-      padding: 12px 16px;
-      margin-bottom: 22px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-    .server-id-text {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 13px;
-      color: #38bdf8;
-      font-weight: 600;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    .copy-btn {
-      background: rgba(56, 189, 248, 0.15);
-      color: #38bdf8;
-      border: 1px solid rgba(56, 189, 248, 0.3);
-      border-radius: 8px;
-      padding: 6px 12px;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s;
-      white-space: nowrap;
-    }
-    .copy-btn:hover {
-      background: #38bdf8;
-      color: #0b1120;
+      margin-bottom: 28px;
     }
     .btn {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 10px;
       background: linear-gradient(135deg, #06b6d4, #3b82f6);
       color: #ffffff;
-      padding: 16px;
+      padding: 18px 24px;
       border-radius: 14px;
       text-decoration: none;
-      font-size: 17px;
+      font-size: 18px;
       font-weight: 800;
-      box-shadow: 0 10px 25px rgba(6, 182, 212, 0.35);
+      box-shadow: 0 10px 30px rgba(6, 182, 212, 0.4);
       border: none;
       width: 100%;
       cursor: pointer;
@@ -114,8 +77,8 @@
       transform: scale(0.98);
     }
     .hint {
-      margin-top: 16px;
-      font-size: 12px;
+      margin-top: 18px;
+      font-size: 13px;
       color: #64748b;
     }
   </style>
@@ -124,12 +87,7 @@
   <div class="card">
     <div class="icon">🚀</div>
     <h1>Launching Roblox Server</h1>
-    <p>Connecting directly into your verified solo server...</p>
-
-    <div class="server-box">
-      <span class="server-id-text" id="jobText">Finding Server...</span>
-      <button class="copy-btn" id="copyBtn" onclick="copyJobId()">📋 Copy ID</button>
-    </div>
+    <p>Connecting you directly to verified solo server...</p>
 
     <button class="btn" id="openBtn" onclick="launchGame()">
       <span>🎮 Launch Roblox Directly</span>
@@ -149,14 +107,6 @@
     const protocolUrl = 'roblox://experiences/start?placeId=' + placeId + '&gameInstanceId=' + jobId;
     const androidIntentUrl = 'intent://experiences/start?placeId=' + placeId + '&gameInstanceId=' + jobId + '#Intent;scheme=roblox;package=com.roblox.client;end';
 
-    // Display formatted JobId
-    const jobTextEl = document.getElementById('jobText');
-    if (jobId) {
-      jobTextEl.innerText = 'Server #' + (jobId.length >= 8 ? jobId.slice(0, 8) : jobId);
-    } else {
-      jobTextEl.innerText = 'Server: Solo Mode';
-    }
-
     function getTargetUrl() {
       if (isAndroid) {
         return androidIntentUrl;
@@ -166,30 +116,13 @@
 
     function launchGame() {
       const target = getTargetUrl();
-      // On mobile browsers and WebView, window.location triggers deep link or Android Intent
       window.location.href = target;
 
-      // Fallback fallback for Android if intent protocol failed
       if (isAndroid) {
         setTimeout(() => {
           window.location.href = protocolUrl;
         }, 500);
       }
-    }
-
-    function copyJobId() {
-      if (!jobId) return;
-      navigator.clipboard.writeText(jobId).then(() => {
-        const btn = document.getElementById('copyBtn');
-        btn.innerText = '✅ Copied!';
-        btn.style.background = '#22c55e';
-        btn.style.color = '#ffffff';
-        setTimeout(() => {
-          btn.innerText = '📋 Copy ID';
-          btn.style.background = 'rgba(56, 189, 248, 0.15)';
-          btn.style.color = '#38bdf8';
-        }, 2000);
-      });
     }
 
     // Auto-launch attempt on initial load

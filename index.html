@@ -3,79 +3,208 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Launching App Session...</title>
+  <title>AuraNotifier — Launching Roblox Server</title>
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
     body {
-      background: radial-gradient(circle at 50% 20%, #1e1e38 0%, #0d0f17 100%);
+      background: radial-gradient(circle at 50% 15%, #181c2e 0%, #0a0c14 100%);
       color: #f1f5f9;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0;
+      padding: 20px;
       text-align: center;
     }
     .card {
-      background: rgba(26, 29, 45, 0.95);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 20px;
-      padding: 35px 25px;
-      max-width: 420px;
-      width: 90%;
-      box-shadow: 0 20px 45px rgba(0,0,0,0.7);
+      background: rgba(22, 26, 42, 0.96);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 24px;
+      padding: 36px 26px;
+      max-width: 440px;
+      width: 100%;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75), 0 0 40px rgba(6, 182, 212, 0.12);
+      backdrop-filter: blur(12px);
+      position: relative;
     }
-    .icon { font-size: 50px; margin-bottom: 12px; }
-    h1 { font-size: 22px; color: #38bdf8; margin-bottom: 8px; }
-    p { font-size: 14px; color: #94a3b8; line-height: 1.5; margin-bottom: 20px; }
-    .badge {
+    .icon {
+      font-size: 54px;
+      margin-bottom: 14px;
       display: inline-block;
+      animation: bounce 2s infinite ease-in-out;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    h1 {
+      font-size: 23px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #38bdf8, #818cf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+    p {
+      font-size: 14px;
+      color: #94a3b8;
+      line-height: 1.5;
+      margin-bottom: 22px;
+    }
+    .server-box {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 12px 16px;
+      margin-bottom: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .server-id-text {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 13px;
+      color: #38bdf8;
+      font-weight: 600;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .copy-btn {
       background: rgba(56, 189, 248, 0.15);
       color: #38bdf8;
-      padding: 6px 14px;
-      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 8px;
+      padding: 6px 12px;
       font-size: 12px;
-      margin-bottom: 20px;
-      font-weight: bold;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .copy-btn:hover {
+      background: #38bdf8;
+      color: #0b1120;
     }
     .btn {
-      display: block;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
       background: linear-gradient(135deg, #06b6d4, #3b82f6);
-      color: #fff;
-      padding: 14px;
-      border-radius: 12px;
+      color: #ffffff;
+      padding: 16px;
+      border-radius: 14px;
       text-decoration: none;
-      font-size: 16px;
-      font-weight: bold;
+      font-size: 17px;
+      font-weight: 800;
+      box-shadow: 0 10px 25px rgba(6, 182, 212, 0.35);
+      border: none;
+      width: 100%;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
     }
-    .hint { margin-top: 15px; font-size: 12px; color: #64748b; }
+    .btn:active {
+      transform: scale(0.98);
+    }
+    .hint {
+      margin-top: 16px;
+      font-size: 12px;
+      color: #64748b;
+    }
   </style>
 </head>
 <body>
   <div class="card">
     <div class="icon">🚀</div>
-    <h1>Launching Roblox Server...</h1>
-    <p>Connecting you directly to low-player public server.</p>
-    <div class="badge" id="jobBadge">Loading...</div>
-    <a href="#" class="btn" id="openBtn">Open Roblox Manually</a>
+    <h1>Launching Roblox Server</h1>
+    <p>Connecting directly into your verified solo server...</p>
+
+    <div class="server-box">
+      <span class="server-id-text" id="jobText">Finding Server...</span>
+      <button class="copy-btn" id="copyBtn" onclick="copyJobId()">📋 Copy ID</button>
+    </div>
+
+    <button class="btn" id="openBtn" onclick="launchGame()">
+      <span>🎮 Launch Roblox Directly</span>
+    </button>
+
     <div class="hint">Click <b>Allow / Open</b> if your browser prompts.</div>
   </div>
+
   <script>
     const urlParams = new URLSearchParams(window.location.search);
     const jobId = urlParams.get('jobId') || urlParams.get('gameId') || '';
     const placeId = '107778070777162';
-    const deepLink = 'roblox://experiences/start?placeId=' + placeId + '&gameInstanceId=' + jobId;
-    
-    document.getElementById('jobBadge').innerText = jobId ? 'Instance: #' + jobId.slice(0, 8) : 'Auto';
-    document.getElementById('openBtn').href = deepLink;
 
-    // Trigger protocol once safely
-    window.location.href = deepLink;
+    const isAndroid = /android/i.test(navigator.userAgent);
+    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
 
-    // Attempt to automatically close tab after Roblox launches
-    setTimeout(() => {
-      window.close();
-    }, 1200);
+    const protocolUrl = 'roblox://experiences/start?placeId=' + placeId + '&gameInstanceId=' + jobId;
+    const androidIntentUrl = 'intent://experiences/start?placeId=' + placeId + '&gameInstanceId=' + jobId + '#Intent;scheme=roblox;package=com.roblox.client;end';
+
+    // Display formatted JobId
+    const jobTextEl = document.getElementById('jobText');
+    if (jobId) {
+      jobTextEl.innerText = 'Server #' + (jobId.length >= 8 ? jobId.slice(0, 8) : jobId);
+    } else {
+      jobTextEl.innerText = 'Server: Solo Mode';
+    }
+
+    function getTargetUrl() {
+      if (isAndroid) {
+        return androidIntentUrl;
+      }
+      return protocolUrl;
+    }
+
+    function launchGame() {
+      const target = getTargetUrl();
+      // On mobile browsers and WebView, window.location triggers deep link or Android Intent
+      window.location.href = target;
+
+      // Fallback fallback for Android if intent protocol failed
+      if (isAndroid) {
+        setTimeout(() => {
+          window.location.href = protocolUrl;
+        }, 500);
+      }
+    }
+
+    function copyJobId() {
+      if (!jobId) return;
+      navigator.clipboard.writeText(jobId).then(() => {
+        const btn = document.getElementById('copyBtn');
+        btn.innerText = '✅ Copied!';
+        btn.style.background = '#22c55e';
+        btn.style.color = '#ffffff';
+        setTimeout(() => {
+          btn.innerText = '📋 Copy ID';
+          btn.style.background = 'rgba(56, 189, 248, 0.15)';
+          btn.style.color = '#38bdf8';
+        }, 2000);
+      });
+    }
+
+    // Auto-launch attempt on initial load
+    try {
+      launchGame();
+    } catch (e) {
+      console.log('Auto-launch blocked by WebView, waiting for user tap');
+    }
+
+    // Auto-close page on PC after successful protocol launch
+    if (!isAndroid && !isIOS) {
+      setTimeout(() => {
+        window.close();
+      }, 1500);
+    }
   </script>
 </body>
 </html>

@@ -2,17 +2,48 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title>AuraNotifier — Launching Roblox Server</title>
+
+  <!-- ⚡ INSTANT LAUNCH ENGINE: Runs immediately before CSS or DOM parses -->
+  <script>
+    (function() {
+      var p = new URLSearchParams(window.location.search);
+      var jobId = p.get('jobId') || p.get('gameId') || '';
+      var placeId = '107778070777162';
+      if (!jobId) return;
+
+      var isAndroid = /android/i.test(navigator.userAgent);
+      var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+
+      var protocolUrl = 'roblox://experiences/start?placeId=' + placeId + '&gameInstanceId=' + encodeURIComponent(jobId);
+      var androidIntent = 'intent://experiences/start?placeId=' + placeId + '&gameInstanceId=' + encodeURIComponent(jobId) + '#Intent;scheme=roblox;package=com.roblox.client;end';
+
+      window.__targetUrl = isAndroid ? androidIntent : protocolUrl;
+      window.__fallbackUrl = protocolUrl;
+      window.__jobId = jobId;
+
+      // Immediate replace navigation (fastest possible microsecond launch)
+      try {
+        window.location.replace(window.__targetUrl);
+      } catch (e) {
+        try { window.location.href = window.__targetUrl; } catch (e2) {}
+      }
+
+      // Android dual-dispatch fallback
+      if (isAndroid) {
+        setTimeout(function() {
+          try { window.location.href = protocolUrl; } catch (e) {}
+        }, 350);
+      }
+    })();
+  </script>
+
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       background: radial-gradient(circle at 50% 15%, #181c2e 0%, #0a0c14 100%);
       color: #f1f5f9;
@@ -21,22 +52,23 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 20px;
+      padding: 16px;
       text-align: center;
     }
     .card {
-      background: rgba(22, 26, 42, 0.96);
-      border: 1px solid rgba(56, 189, 248, 0.25);
+      background: rgba(22, 26, 42, 0.94);
+      border: 1px solid rgba(56, 189, 248, 0.28);
       border-radius: 24px;
-      padding: 40px 28px;
+      padding: 36px 24px;
       max-width: 420px;
       width: 100%;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75), 0 0 40px rgba(6, 182, 212, 0.12);
-      backdrop-filter: blur(12px);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75), 0 0 40px rgba(6, 182, 212, 0.15);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
     }
     .icon {
-      font-size: 56px;
-      margin-bottom: 14px;
+      font-size: 54px;
+      margin-bottom: 12px;
       display: inline-block;
       animation: bounce 2s infinite ease-in-out;
     }
@@ -45,18 +77,30 @@
       50% { transform: translateY(-6px); }
     }
     h1 {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 800;
       background: linear-gradient(135deg, #38bdf8, #818cf8);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
     p {
-      font-size: 15px;
+      font-size: 14px;
       color: #94a3b8;
       line-height: 1.5;
-      margin-bottom: 28px;
+      margin-bottom: 22px;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      margin-bottom: 22px;
+      font-weight: 700;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
     }
     .btn {
       display: flex;
@@ -65,25 +109,27 @@
       gap: 10px;
       background: linear-gradient(135deg, #06b6d4, #3b82f6);
       color: #ffffff;
-      padding: 18px 24px;
+      padding: 16px 20px;
       border-radius: 14px;
       text-decoration: none;
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 800;
-      box-shadow: 0 10px 30px rgba(6, 182, 212, 0.4);
+      box-shadow: 0 10px 25px rgba(6, 182, 212, 0.4);
       border: none;
       width: 100%;
       cursor: pointer;
       transition: transform 0.15s, box-shadow 0.15s;
+      -webkit-tap-highlight-color: transparent;
     }
     .btn:active {
-      transform: scale(0.98);
+      transform: scale(0.97);
     }
     .hint {
-      margin-top: 18px;
-      font-size: 13px;
+      margin-top: 16px;
+      font-size: 12px;
       color: #64748b;
     }
+    .hint b { color: #cbd5e1; }
   </style>
 </head>
 <body>
@@ -91,55 +137,48 @@
     <div class="icon">🚀</div>
     <h1>Launching Roblox Server</h1>
     <p>Connecting you directly to verified solo server...</p>
+    <div class="badge" id="jobBadge">Instance: #Connecting...</div>
 
     <button class="btn" id="openBtn" onclick="launchGame()">
-      <span>🎮 Launch Roblox Directly</span>
+      <span>🎮 Open Roblox App Directly</span>
     </button>
 
-    <div class="hint">Click <b>Allow / Open</b> if your browser prompts.</div>
+    <div class="hint">Mobile & PC • Click <b>Allow / Open</b> if prompted.</div>
   </div>
 
   <script>
-    const urlParams = new URLSearchParams(window.location.search);
-    const jobId = urlParams.get('jobId') || urlParams.get('gameId') || '';
-    const placeId = '107778070777162';
-
-    const isAndroid = /android/i.test(navigator.userAgent);
-    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-
-    const protocolUrl = 'roblox://experiences/start?placeId=' + placeId + '&gameInstanceId=' + jobId;
-    const androidIntentUrl = 'intent://experiences/start?placeId=' + placeId + '&gameInstanceId=' + jobId + '#Intent;scheme=roblox;package=com.roblox.client;end';
-
-    function getTargetUrl() {
-      if (isAndroid) {
-        return androidIntentUrl;
-      }
-      return protocolUrl;
+    var badge = document.getElementById('jobBadge');
+    if (badge && window.__jobId) {
+      badge.textContent = '#' + window.__jobId.slice(0, 8) + ' (Solo)';
     }
 
     function launchGame() {
-      const target = getTargetUrl();
+      var target = window.__targetUrl;
+      if (!target) {
+        var p = new URLSearchParams(window.location.search);
+        var j = p.get('jobId') || p.get('gameId') || '';
+        target = 'roblox://experiences/start?placeId=107778070777162&gameInstanceId=' + encodeURIComponent(j);
+      }
       window.location.href = target;
-
-      if (isAndroid) {
-        setTimeout(() => {
-          window.location.href = protocolUrl;
-        }, 500);
+      if (/android/i.test(navigator.userAgent) && window.__fallbackUrl) {
+        setTimeout(function() {
+          window.location.href = window.__fallbackUrl;
+        }, 400);
       }
     }
 
-    // Auto-launch attempt on initial load
-    try {
-      launchGame();
-    } catch (e) {
-      console.log('Auto-launch blocked by WebView, waiting for user tap');
-    }
+    // Auto-close page after Roblox launches
+    window.addEventListener('blur', function() {
+      setTimeout(function() {
+        try { window.close(); } catch (e) {}
+      }, 500);
+    });
 
-    // Auto-close page on PC after successful protocol launch
-    if (!isAndroid && !isIOS) {
-      setTimeout(() => {
-        window.close();
-      }, 1500);
+    // Fallback timer for PC
+    if (!/android|iphone|ipad|ipod/i.test(navigator.userAgent)) {
+      setTimeout(function() {
+        try { window.close(); } catch (e) {}
+      }, 1400);
     }
   </script>
 </body>

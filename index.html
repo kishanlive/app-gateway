@@ -28,15 +28,15 @@
       background: rgba(22, 26, 42, 0.96);
       border: 1px solid rgba(56, 189, 248, 0.25);
       border-radius: 24px;
-      padding: 40px 28px;
-      max-width: 420px;
+      padding: 36px 24px;
+      max-width: 440px;
       width: 100%;
       box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75), 0 0 40px rgba(6, 182, 212, 0.12);
       backdrop-filter: blur(12px);
     }
     .icon {
-      font-size: 56px;
-      margin-bottom: 14px;
+      font-size: 52px;
+      margin-bottom: 12px;
       display: inline-block;
       animation: bounce 2s infinite ease-in-out;
     }
@@ -45,18 +45,18 @@
       50% { transform: translateY(-6px); }
     }
     h1 {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 800;
       background: linear-gradient(135deg, #38bdf8, #818cf8);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
     p {
-      font-size: 15px;
+      font-size: 14px;
       color: #94a3b8;
       line-height: 1.5;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
     }
     .btn {
       display: flex;
@@ -65,23 +65,37 @@
       gap: 10px;
       background: linear-gradient(135deg, #06b6d4, #3b82f6);
       color: #ffffff;
-      padding: 18px 24px;
+      padding: 16px 20px;
       border-radius: 14px;
       text-decoration: none;
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 800;
-      box-shadow: 0 10px 30px rgba(6, 182, 212, 0.4);
+      box-shadow: 0 10px 25px rgba(6, 182, 212, 0.35);
       border: none;
       width: 100%;
       cursor: pointer;
       transition: transform 0.15s, box-shadow 0.15s;
+      margin-bottom: 12px;
     }
     .btn:active {
       transform: scale(0.98);
     }
+    .btn-alt {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: none;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 12px 16px;
+      color: #cbd5e1;
+    }
+    .btn-alt:hover {
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+    }
     .hint {
-      margin-top: 18px;
-      font-size: 13px;
+      margin-top: 14px;
+      font-size: 12px;
       color: #64748b;
     }
   </style>
@@ -90,13 +104,17 @@
   <div class="card">
     <div class="icon">🚀</div>
     <h1>Launching Roblox Server</h1>
-    <p>Connecting you directly to verified solo server...</p>
+    <p>Connecting you directly into your private solo server...</p>
 
-    <button class="btn" id="openBtn" onclick="launchGame()">
-      <span>🎮 Launch Roblox Directly</span>
+    <button class="btn" id="openBtn" onclick="launchApp()">
+      <span>🎮 Launch Official Roblox App</span>
     </button>
 
-    <div class="hint">Click <b>Allow / Open</b> if your browser prompts.</div>
+    <a class="btn btn-alt" id="webBtn" href="#" target="_blank" onclick="launchWeb()">
+      <span>🌐 Alternative: Web Direct Launcher</span>
+    </a>
+
+    <div class="hint">Click <b>Allow / Open Roblox</b> if prompted by browser.</div>
   </div>
 
   <script>
@@ -107,22 +125,23 @@
     const isAndroid = /android/i.test(navigator.userAgent);
     const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
 
-    // Official standard deep-link scheme
     const protocolUrl = 'roblox://experiences/start?placeId=' + placeId + '&gameInstanceId=' + jobId;
     const androidIntentUrl = 'intent://experiences/start?placeId=' + placeId + '&gameInstanceId=' + jobId + '#Intent;scheme=roblox;package=com.roblox.client;end';
-    const webFallbackUrl = 'https://www.roblox.com/games/start?placeId=' + placeId + '&gameInstanceId=' + jobId;
+    const webUrl = 'https://www.roblox.com/games/start?placeId=' + placeId + '&gameInstanceId=' + jobId;
 
-    function getTargetUrl() {
+    // Set web fallback href
+    document.getElementById('webBtn').href = webUrl;
+
+    function getAppUrl() {
       if (isAndroid) {
         return androidIntentUrl;
       }
       return protocolUrl;
     }
 
-    function launchGame() {
-      const target = getTargetUrl();
+    function launchApp() {
+      const target = getAppUrl();
       window.location.href = target;
-
       if (isAndroid) {
         setTimeout(() => {
           window.location.href = protocolUrl;
@@ -130,17 +149,16 @@
       }
     }
 
-    // Auto-launch attempt on initial load
-    try {
-      launchGame();
-    } catch (e) {
-      console.log('Auto-launch blocked by WebView, waiting for user tap');
+    function launchWeb() {
+      window.location.href = webUrl;
     }
 
-    // Close or fallback
-    setTimeout(() => {
-      window.close();
-    }, 1800);
+    // Auto-launch attempt on initial load without closing tab
+    try {
+      launchApp();
+    } catch (e) {
+      console.log('Auto-launch blocked, waiting for click');
+    }
   </script>
 </body>
 </html>

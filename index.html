@@ -107,8 +107,8 @@
     const isAndroid = /android/i.test(navigator.userAgent);
     const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
 
-    const protocolUrl = 'roblox://experiences/start?placeId=' + placeId + '&gameInstanceId=' + jobId;
-    const androidIntentUrl = 'intent://experiences/start?placeId=' + placeId + '&gameInstanceId=' + jobId + '#Intent;scheme=roblox;package=com.roblox.client;end';
+    const protocolUrl = 'roblox://placeId=' + placeId + '&gameInstanceId=' + jobId;
+    const androidIntentUrl = 'intent://placeId=' + placeId + '&gameInstanceId=' + jobId + '#Intent;scheme=roblox;package=com.roblox.client;end';
 
     function getTargetUrl() {
       if (isAndroid) {

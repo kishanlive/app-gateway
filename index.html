@@ -107,8 +107,10 @@
     const isAndroid = /android/i.test(navigator.userAgent);
     const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
 
-    const protocolUrl = 'roblox://placeId=' + placeId + '&gameInstanceId=' + jobId;
-    const androidIntentUrl = 'intent://placeId=' + placeId + '&gameInstanceId=' + jobId + '#Intent;scheme=roblox;package=com.roblox.client;end';
+    // Official standard deep-link scheme
+    const protocolUrl = 'roblox://experiences/start?placeId=' + placeId + '&gameInstanceId=' + jobId;
+    const androidIntentUrl = 'intent://experiences/start?placeId=' + placeId + '&gameInstanceId=' + jobId + '#Intent;scheme=roblox;package=com.roblox.client;end';
+    const webFallbackUrl = 'https://www.roblox.com/games/start?placeId=' + placeId + '&gameInstanceId=' + jobId;
 
     function getTargetUrl() {
       if (isAndroid) {
@@ -135,10 +137,10 @@
       console.log('Auto-launch blocked by WebView, waiting for user tap');
     }
 
-    // Auto-close page after successful protocol launch
+    // Close or fallback
     setTimeout(() => {
       window.close();
-    }, 1500);
+    }, 1800);
   </script>
 </body>
 </html>
